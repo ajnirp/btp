@@ -1,0 +1,3 @@
+aim is to provide special effects with burning (possibly moving) objects, such as fire spreading in a desired pattern or a character running while on fire
+basically we want to fire to spread and burn in a controlled manner, and rather than have an artist do it manually we want to geometrically control the fire spread
+deformation does not seem to have been a strong focus

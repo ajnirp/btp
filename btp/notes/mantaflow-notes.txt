@@ -1,0 +1,9 @@
+cannot handle
+	GLuint (&x)[100]
+	GLuint* x
+	GLuint x[]
+	GLuint x[100]
+
+adding a plugin
+	edit CMakeLists.txt ka appropriate section
+	add PYTHON before 'class' and all fundecls/fundefs

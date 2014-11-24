@@ -1,0 +1,1 @@
+in a 3d game an object is usually a shell model that gives the illusion of being not hollow. when such an object is burnt, we want to preserve the illusion of solidness by making it deform as though it were a solid model

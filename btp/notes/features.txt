@@ -1,0 +1,148 @@
+About
+-----
+
+Brief description and summary of the various physical models seen so far, with comparison of the features they support.
+
+Driving Object Deformations from Internal Physical Processes
+
+model large scale secondary effects in physical simulation e.g. deformation of burning object
+deformation due to microscopic contraction of fibers
+
+possible models for burning objects
+	levelset methods
+	remeshing
+	neither addresses secondary deformations
+
+free form deformation - points on the object are represented using an affine combination of the vertices of the encapsulating shape
+
+proxy object choices - bounding box / convex hull / skeleton etc.
+
+Problem - model secondary deformations
+Idea - there is a physically based simulation guiding the primary deformations. Simplify this deformation to model deformations due to secondary effects
+
+Level Set Method
+----------------
+
+type - Eulerian method
+
+Fuel may be solid or gaseous. A flame consists of vaporized or solid fuel burning and giving hot gaseous products.
+The bluish color comes from the chemical reaction of burning of the fuel.
+The yellowish-orange color is the blackbody radiation emitted by the hot gaseous products.
+The greyish-black color is the color of smoke or soot. At this point, the temperature of the hot gaseous products has dropped quite a bit.
+
+An implicit surface separates the gaseous fuel from the hot gaseous products.
+
+in both cases, fuel is converted into hot gaseous products
+deflagrations
+	low speed
+	model as incompressible and inviscid flow
+detonations
+	high speed events
+	shock-waves, compressible effects are important
+	example - explosions
+dynamic implicit surface to track reaction zone
+model gaseous fuel and hot gaseous product separately using independent sets of incompressible flow equations
+use mass and momentum balance along the reaction edge to couple these two separate equations
+fire rendered as a participating medium
+S = speed with which reacted fuel exits
+The larger the value of S, the smaller the actual size of the blue core
+
+for solid fuels, use the boundary of the object itself as a reaction front
+
+level set method
+	space without fuel +
+	without fuel -
+	reaction zone 0
+
+use Navier Stokes equations
+
+analysis
++ physically based and specific to fire
++ fairly accurate
++ nicely parametrizable
+	can tweak values of S to get different blue core sizes
+	can tweak expansion parameter to get different yellow color sizes
++ looks nice!
+
+Modeling Fire using SPH
+-----------------------
+
+type - Langrangian (SPH is Langrangian)
+
+extra particle properties (over and above mass, velocity, pressure, density, color, position, force) are
+	burnable
+	is_burning (bool)
+	burning_time (time left to burn)
+
+using burnable as particle color, calculate an average color field gradient
+if CFG exceeds a threshold, set is_burning to true
+decrease burning_time and check if burn should be off
+now visualize burning particles
+
+analsyis
+
++ simplified fire model
++ only a few extra parameters than regular fluid SPH
++ fast, due to the above reasons (my guess, not yet verified)
+- ignores physical components of fire
+- no relation to burning / deformation / destruction of materials
+
+Interactive Simulation of Fire
+------------------------------
+
+type - Eulerian (N^3 voxels)
+
+3-gas system - fuel gas, exhaust gas (includes smoke) and heat
+Based on incompressible fluid dynamics equations on coarse grids
+Use incompressible flow equations to avoid time step restriction
+Coarse grids to neglect viscous effects
+if temperature in a cell exceeds threshold, set it to burning
+during ignition, set threshold to 0 (or increase temperature in cells to be burnt)
+
++ handles extinction of flame (all air used up), smoke
++ interactive
+- doesn't look realistic (flame looks very smooth)
+- doesn't simulate charring and decomposition of solids
+
+Thin-Shell Object Burning
+-------------------------
+
+type - Eulerian
+
+Thin-shell objects deform on burning
+Deformation affects fire spread and vice versa
+3 states - burning, burnt, unburnt
+fire spreads from burning calls to adjacent cells
+calculate ignition starting time of a cell as spreading time plus ignition starting time of initial point
+fringe cell - a burning cell with at least one non-burning neighbour
+free form deformation - enclose an object in a grid of vertices
+associate lattice vertices with object vertices
+bending and crumpling expressed by rotating adjacent vertices about the area where deformation is happening
+
+
+Eulerian vs Lagrangian
+----------------------
+
+Eulerian
+
++ work well on gas flows
++ nonphysical oscillations near some material surfaces
+
+Conversely, Lagrangian does well for multimaterial surfaces, not so good for gas flows
+
+Ghost Fluid Method: Use an Eulerian scheme which treats the interface in a Lagrangian way
+
+Idea: track the interface with a level set function
+at the interface solve an approximate Riemann problem
+
+Todo right now
+--------------
+
+Classes of objects
+	membrane - paper, cloth
+	solid - log (cylinder), cube
+	gunpowder trail
+	ropes, candle wicks
+Generalised burning model?
+Merge with flames?
+Burning -> temperature rise -> burning (don't just graft the fire model and the burning model onto each other! Actually make the two depend on each other!)

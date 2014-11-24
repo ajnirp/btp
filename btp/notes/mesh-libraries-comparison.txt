@@ -1,0 +1,6 @@
+Meshing libraries
+
+Meshlab - unstructured 3D triangular meshes
+CGAL - heavy library for algorithms on meshes
+VCGlib - building blocks for triangular and tetrahedral meshes
+TetGen - tetrahedral mesh generator. takes as input .poly or .smesh files and outputs mesh files. looks the most promising so far.

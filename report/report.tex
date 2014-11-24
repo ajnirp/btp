@@ -1,0 +1,337 @@
+\documentclass[a4paper]{report}
+% \documentclass[a4paper,9pt]{report}
+
+% \usepackage[margin=0.95in]{geometry}
+\usepackage{inconsolata}
+\usepackage[normalem]{ulem}
+\usepackage[hidelinks,backref]{hyperref} % clickable links and citations with no green borders
+\usepackage{amsmath}
+\usepackage{listings} % add source code snippets
+\usepackage{csquotes} % block quotes
+\usepackage{color}
+\usepackage{caption}
+\usepackage{float}
+\usepackage{subcaption}
+
+% the bibliography should appear in the table of contents
+\usepackage[nottoc,numbib]{tocbibind}
+
+% reduce table of contents spacing
+\usepackage[titles]{tocloft}
+\setlength{\cftbeforechapskip}{.1ex}
+\setlength{\cftbeforesecskip}{-.5ex}
+
+\usepackage[dvips]{graphicx}
+\graphicspath{{img/}}
+\DeclareGraphicsExtensions{.png,.jpg}
+% \setlength{\parindent}{0pt} % paragraph indentation
+\setlength{\parskip}{3mm} % paragraph spacing
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mydarkgray}{rgb}{0.4,0.4,0.4}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+\definecolor{myrust}{rgb}{0.77,0,0}
+\pagestyle{empty}
+
+\lstset{ %
+  backgroundcolor=\color{white},   % choose the background color; you must add \usepackage{color} or \usepackage{xcolor}
+  basicstyle=\footnotesize\ttfamily,        % the size of the fonts that are used for the code
+  breakatwhitespace=false,         % sets if automatic breaks should only happen at whiterspace
+  breaklines=true,                 % sets automatic line breaking
+  captionpos=b,                    % sets the caption-position to bottom
+  commentstyle=\color{mygreen},    % comment style
+  deletekeywords={...},            % if you want to delete keywords from the given language
+  escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
+  extendedchars=true,              % lets you use non-ASCII characters; for 8-bits encodings only, does not work with UTF-8
+  frame=single,                    % adds a frame around the code
+  keepspaces=true,                 % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
+  keywordstyle=\color{blue},       % keyword style
+  language=C++,                    % the language of the code
+  morekeywords={*,...},            % if you want to add more keywords to the set
+  numbers=none,                    % where to put the line-numbers; possible values are (none, left, right)
+  numbersep=5pt,                   % how far the line-numbers are from the code
+  numberstyle=\tiny\color{mygray}, % the style that is used for the line-numbers
+  rulecolor=\color{black},         % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. comments (green here))
+  showspaces=false,                % show spaces everywhere adding particular underscores; it overrides 'showstringspaces'
+  showstringspaces=false,          % underline spaces within strings only
+  showtabs=false,                  % show tabs within strings adding particular underscores
+  stepnumber=2,                    % the step between two line-numbers. If it's 1, each line will be numbered
+  stringstyle=\color{mymauve},     % string literal style
+  tabsize=2,                       % sets default tabsize to 2 spaces
+  % title=\lstname                   % show the filename of files included with \lstinputlisting; also try caption instead of title
+}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=red,
+  urlcolor=blue,
+  citecolor=myrust,
+  linktoc=page
+}
+
+\author{
+  Rohan Prinja
+}
+
+\title{Physically Simulating Burning of Rigid Objects}
+% \subtitle{B. Tech Project (Phase I) Report}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+\chapter{Introduction}
+
+\section{Photorealistic Simulation} % (fold)
+\label{sec:photorealistic_simulation}
+
+Photorealism in the context of computer graphics means creating renderings or animations that look as similar to real life as possible. This project is about using physically-based methods to achieve photorealism in the context of simulating the behaviour of fire and its interaction with arbitrary objects in three dimensions. Simulating fire is an instance of a more general problem - we have materials which are known to follow some physical laws and we want to animate them over some time frame. The hard part is doing this realistically. Physically-based simulation is a way to do so. Before physical simulation was a viable option, photorealism in simulating materials was traditionally achieved in one of two ways:
+
+\begin{enumerate}
+  \item Skilled animators, designers and artists would manually draw or adjust each frame of the animation in order to make it look real. The obvious problem with this approach is that it is slow. A 120-minute with 24 frames per second has 1,72,800 frames! A lot of manpower and time is needed if we want to make an animation longer than just a few minutes. Some amount of automation is necessary.
+  \item We can model the materials to be animated by simple heuristics whose parameters can be tweaked to give the illusion of realistic behaviour. Flames, for example, can be simulated by Perlin noise, a relatively simple catch-all model (used in many diverse areas) that does not take into account any of the physical properties of fire. Although this in practice very easy to implement, there are two problems with this approach.
+  \begin{enumerate}
+    \item A large amount of tweaking is required to get the heuristics just right, and in any case, we are not really simulating the behaviour of the material as much as simply using ``hacks" to get the job done. This limits the extent to which our results can be photorealistic.
+    \item Another problem is that in the real world, interactions between objects can become quite complicated. When a white sheet of paper is burnt, fire propagates across the sheet. The paper becomes discolored, going from white to brown and then black. The paper deforms at the point of burning, and this burning is often directly proportional to the strength of the flame at that point. The deformation itself affects the precise way in which the flame will spread from the currently burning portion to the rest of the paper. Little bits of ash may fall off as the burning progresses. Smoke is emitted by the flame. A heuristic model to account for all these complex interactions would be complicated and unwieldy. Our only option then is to sacrifice accuracy for simplicity of implementation.
+  \end{enumerate}
+\end{enumerate}
+
+Given these disadvantages, why is it only recently that physically-based methods have become popular? The answer is that we do not have closed-form solutions for simulating many physical phenomena. Instead, we usually have a system of differential equations that are solved by numerical methods, which are often slow. This means that computing the scene description of even a single frame of an animation on a personal computer can take a large amount of time, perhaps as many as a few seconds to a few minutes or more. Until recently, the hardware to efficiently process these computations had not yet caught up with software demands. Today, however, with the advent of more powerful methods of computation (parallel programming, graphics processing units, render farms, etc.) running time is no longer as big a barrier, and it is easier to achieve realism via physically-based animation.
+
+% section photorealistic_simulation (end)
+
+\section{About this project} % (fold)
+\label{sec:about_this_project}
+
+\subsection{Aim of the project}
+
+In this project we aim to develop a framework for simulating the burning of an arbitrarily-shaped object. The inputs to this program will be a 3D object (described as either a mesh of triangles or tetrahedra) with certain parameters, like calorific value, rate of flame propagation, and so on. Along with this, we will have a list of coordinates corresponding to points on the surface of the object which are on fire at time $t = 0$. The output of this program will be a series of frames which can be stitched together into an animation. The animation will depict the propagation of flame across the surface of the object (for thin-shell objects) or the body of the object (for volumetric objects). As the flame progresses, the object will heat up and then burn, in the process deforming and losing mass. The object may burn directly or first melt and then burn (this is parametrizable). Burning byproducts like ash and smoke will be emitted.
+
+\subsection{Difference from heuristic methods}
+
+Like the heuristic methods described in \ref{sec:photorealistic_simulation}, we are using parameters to differentiate the behaviour of one type of object from another. However, the difference here is that we are the parameterization corresponds to actual physical properties of the object, for example, does the object melt or directly burn, what is the rate at which fuel escapes from the object surface and so on. In heuristic-based methods there may or may not be any direct relation between a simulation parameter and the physical properties of the materials involved in the simulation.
+
+% section about_this_project (end)
+
+\section{Structure of this Report} % (fold)
+\label{sec:structure_of_this_report}
+
+TODOTODO
+
+% section structure_of_this_report (end)
+
+\chapter{Literature Survey}
+
+In this section, we discuss the features we would like to have in a unified model of burning objects, and discuss the literature on the implementation of these features.
+
+\section{A Wishlist for a Unified Model of Burning} % (fold)
+\label{sec:a_wishlist_for_a_unified_model_of_burning}
+
+As mentioned above, a feature-complete burning simulation would include most or all of the following phenomena
+
+\begin{enumerate}
+  \item Flames and smoke. The flames spread across the surface of the object as the simulation progresses.
+  \item Mass loss. The object should lose mass as the simulation progresses, since it is being converted to fuel which is used to feed the flame.
+  \item The object might deform. By deformation we mean that certain parts of the object change the angles they make with other parts of the object. For example, if we burn the Stanford bunny, we might expect to see its ears droop. Or, as we burn a sheet of paper, it should crumple in on itself.
+  \item Melting, possibly. An object need not necessarily burn directly, it may first melt and then the liquid will catch fire.
+\end{enumerate}
+
+All these phenomena have been well-studied. Below, we discuss some of these papers. However, there hasn't been much investigation into creating a model that unifies all of these features into a single simulation model. All of the following papers concentrate on implementing only a subset of these features, often with great results.
+
+% section a_wishlist_for_a_unified_model_of_burning (end)
+
+\section{Survey of previous work} % (fold)
+\label{sec:survey_of_previous_work}
+
+In \cite{festje}, the authors present a way to simulate smoke. This paper used a standard stable fluids approach as introduced in Stam's seminal paper \cite{stam}, and introduced vorticity confinement as a way to model the turbulence associated with smoke.
+
+This paper was used in \cite{ngfeje}, in which the authors presented a framework for animating fire along with smoke. Flames are considered as the product of burning a gaseous fuel. The authors implement a coupled system consisting of two fluids - the fuel undergoing burning, and the hot gaseous product. A level-set is used to track the implicit surface that separates the fuel from the gaseous product. The paper also discusses burning of solid fuels. Points on the surface of the solid are assumed to be emitting gaseous fuel at a certain rate. In this way the solid burning case is reduced to the gas burning case. However, the paper is not concerned with the effects on the solid as the simulation progresses. Mass loss, deformation and residue formation are thus not dealt with, since the focus of the paper is rendering and animating flames.
+
+In \cite{jiyoai}, the authors implement burning of the surface of volumetric objects. The main contribution of this project is a very fast GPU-based implementation of surface burning. However, flames are not simulated, and only mass loss is dealt with - object deformation is not modeled. Further more, the paper only deals with melting and not burning.
+
+In \cite{liliansu}, the authors describe a method to burn thin-shell rigid objects like paper. They depict flames, and also model the object's deformation and discoloration as it burns. However, the scope of the paper does not extend to volumetric objects, or smoke simulation.
+
+\cite{loirgufe} is the most feature-complete of them all. It describes a refined meshing procedure for solids and demonstrates melting of solids into liquids and deformation of thin-shell objects. However, it does not demonstrate melting alongside burning or deformation of volumetric objects. Thus there is room for improvement here as well.
+
+\cite{melek} discusses a unified model of burning that involves smoke emission, combustion, heat distribution, mass loss, deformation and residue formation. However, it is interactive and real-time, and thus less photorealistic than other burning simulation attempts.
+
+% section survery_of_previous_work (end)
+
+\chapter{An Introduction to Fluid Simulation}
+
+Flames in a burning model are simulated using fluid simulation techniques. In our implementation we follow the approach outlined by \cite{ngfeje}, in which fire is treated as a coupled system of two fluids. The first fluid is the fuel being burnt. The second is the gas emitted when the first is burnt. The two fluids are separated by a roughly conical surface called the blue core. The fluid being burnt is inside the cone. The coupling comes from the fact that the blue core has to, at every step of the simulation accurately represent the boundary between the two fluids. To do this a level-set technique is used, and the level-set values are periodically corrected to avoid numerical inaccuracies.
+
+In this chapter, we discuss the general problem of fluid simulation, and then explain how \cite{ngfeje} builds on top of fluid simulation to simulate fire.
+
+\section{The Navier-Stokes equations}
+
+There are many ways to simulate fluids. The literature in computer graphics usually focuses on incompressible fluids. The techniques relevant to us are those which simulate the Navier-Stokes equations, sometimes referred to as the Euler equations. They treat the fluid as a velocity field satisfying:
+
+\begin{equation}
+\nabla \cdot \mathbf{u} = 0
+\end{equation}
+\begin{equation}
+\dfrac{\partial{\mathbf{u}}}{\partial{t}} = -(\nabla \cdot \mathbf{u})\mathbf{u} - \dfrac{1}{\rho}\nabla p + \nu \nabla^2\mathbf{u} + \mathbf{F}
+\end{equation}
+
+Here, $\mathbf{u}$ is the fluid velocity, $t$ is time, $\rho$ is the fluid density (assumed uniform everywhere), $p$ is the pressure, $\nu$ is the viscosity of the fluid (also assumed constant), and $\mathbf{F}$ is the external force field on the fluid (gravity, buoyancy, wind, etc.).
+
+The first equation says that any point inside the fluid, the divergence of the velocity field is zero. This means that at any point inside the volume occupied by the fluid, mass is neither being accumulated nor lost. This is a consequence of the fact that we are dealing only with incompressible fluids.
+
+The second equation is Newton's second law in the context of a (not necessarily incompressible) fluid element, minus the mass term. It says that the change in the velocity field over time is due to four things.
+
+\begin{enumerate}
+  \item The first term is the convection term. The momentum of the fluid is advected (``carried along") by the velocity field.
+  \item The second term is the pressure term. Pressure differences within the fluid create forces on a fluid element.
+  \item The third term is the diffusion term. The Laplacian operator measures the extent to which the neighbouring fluid elements differ from the current fluid element. The greater the difference, the greater the force exerted on the current fluid element. The viscosity of the fluid ``damps" this force - the larger it is, the less likely the fluid element is to respond to a velocity difference between itself and its neighbours.
+  \item The fourth term is an external force field. This varies depending on the fluid we are simulating. For water and other liquids, it is typically gravity, which is implemented as a constant downward force field. For the gaseous fuel and the hot gaseous product in the flame simulation, it is buoyancy which varies from fluid element to fluid element depending on the temperature.
+\end{enumerate}
+
+There is no closed-form solution for the Navier-Stokes equations yet. So we have to actually update the velocity field by manually calculating the appropriate gradients. We now describe, at a high-level, a way to solve these equations.
+
+\section{Solving the Navier-Stokes equations}
+
+In this section, we describe Stam's stable fluids method, since it is the one used by the paper on which our fire implentation is based. A fluid is continuous, but in practice we simulate it on a discrete grid called the \textbf{MAC grid} (marker-and-cell grid). Each cell has a pressure variable $p$ and a density variable $\rho$ defined at its center, and velocity components $u_x$, $u_y$ and $u_z$ defined at its centre. These values are updated in each simulation step. The main program looks like this:
+
+\lstset{language=C++}
+\begin{lstlisting}
+void main()
+{
+  intializeGrid();
+  while (true)
+  {
+    updateGrid();
+    renderGrid();
+  }
+}
+\end{lstlisting}
+
+The high-level algorithm for updateGrid() is:
+\lstset{language=C++}
+\begin{lstlisting}
+void updateGrid()
+{
+  addExternalForces(); //add gravity, buoyancy, etc. to each MAC cell
+  advectParticles(); //advect the velocity field along itself
+  diffuse(); //spread the velocity field around to represent velocity
+  project(); //remove divergence created above (Navier-Stokes #1)
+}
+\end{lstlisting}
+
+The main contribution of Stam's stable fluids paper was that advection was done in a semi-implicit way. Previously, velocity was advected by taking velocities from adjacent grid cells. This led to unstable simulations which were controlled by carefully adjusting the timestep. Stam used the method of characteristics, which is unconditionally stable. To find the new velocity at a point $x$ (located at the center of a grid cell), we walk backwards along the velocity field \textbf{u} for time $\delta t$. Wherever we land, we obtain the new velocity by interpolating the current velocities. This new velocity is the velocity at point $x$ after time $\delta t$.
+
+\section{Flame simulation using stable fluids}
+
+\subsection{Extensions to Stam's paper}
+
+In \cite{ngfeje}, the authors take the ideas presented in Stam's paper and apply it to the problem of simulating fire. In addition to the above-mentioned simulation variables, we also store the unit normal at each grid cell for which the level-set value is non-positive, that is, we store the unit normal at each point in the region occupied by the gaseous fuel as well as the implicit surface.
+
+We also have two balance equations used to conserve mass and momentum across the implicit surface:
+
+\begin{equation}
+\rho_h(V_h - D) = \rho_f(Vf - D)
+\end{equation}
+\begin{equation}
+\rho_h(V_h - D)^2 + p_h = \rho_f(Vf - D)^2 + p_f
+\end{equation}
+
+where $p_h$ and $p_f$ are the pressures of the hot gaseous products and the gaseous fuels. Similarly, $V_h$ and $V_f$ are the components of the velocities of the gases in the normal direction (normal with respect to the implicit surface), and $D$ is the speed of the implicit surface in the normal direction. We have $D = V_f - S$, where $S$ is a fuel parameter proportional to the rate at which the fuel burns i.e. the rate at which the gaseous fuel is converted to the hot gaseous product.
+
+The implicit surface itself is represented by a level-set defined at the centre of each grid cell, which is updated at each time step. We also store a scalar representing temperature at each grid cell. Every few time steps, numerical error will build up so a fast-march technique (see \cite{sethian}) is used to correct the level-set values.
+
+\subsection{The ghost fluid method}
+
+The other problem to take care of in a coupled system is that the advection step involves moving a particle `backwards' in time. For a particle in the gaseous product fluid, tracing backwards might take us to a position in the gaseous fuel region. We would then be interpolating velocities from one fluid to assign a new velocity for the other fluid, which is wrong. To solve this problem, the authors make use of the ghost fluid method introduced in \cite{ghost}. Say we are tracing back a fuel particle and we end up in the region occupied by the gaseous product. Instead of interpolating the gaseous product velocities we interpolate the ghost fluid velocities, where the ghost fluid velocity is given by
+
+\begin{equation}
+\mathbf{u}^G_h = V^G_h\mathbf{n} + \mathbf{u}_f - (\mathbf{u}_f\cdot\mathbf{n})\mathbf{n}
+\end{equation}
+
+Here, $V_f$ is the normal velocity of the fuel computed as $V_f = \mathbf{u}_f\cdot\mathbf{n}$, where $\mathbf{n}$ is the unit normal. The velocity $V^G_h$ is computed as
+
+\begin{equation}
+V^G_h = V_f + (\dfrac{\rho_f}{\rho_h} - 1)S
+\end{equation}
+
+\subsection{Evolving temperature and density}
+
+For temperature, we evolve a scalar variable Y which takes values in the range $[0, 1]$. This variable is then mapped to the temperature using a temperature curve identified by the authors. The authors also identify a computationally cheap alternative to mapping to the temperature falloff region of the curve (in which the temperature has reached its peak value and now only decreases). For smoke, we simulate another fluid representing smoke. We evolve a scalar variable representing the density of the smoke.
+
+\chapter{Modeling Objects}
+
+In this section we discuss how we model the objects on which burning is being simulated. We do this by classifying the objects as 2D or 3D, and if 3D, thin-shell or volumetric. In each case, the solid needs to be meshed. Our flame propagation algorithm operates on this mesh.
+
+\subsection{Meshing two-dimensional objects}
+
+Two-dimensional objects are simulated as a mesh of triangles. For this, the \href{http://www.cs.cmu.edu/~quake/triangle.html}{\texttt{triangle}} tool is used. It generates the DeLaunay triangulation of a surface.
+
+\subsection{Meshing three-dimensional objects}
+
+We consider two types of 3D objects - \textbf{thin shell objects} and \textbf{volumetric objects}. Thin-shell objects have no thickness, for example, paper, cloth and hollow spheres. We only need to mesh the surfaces of such objects using triangles. Volumetric objects by contrast are solid. We model these objects as a mesh of tetrahedra. For this we use the \href{http://www.tetgen.org/}{\texttt{tetgen}} tool. Like \texttt{trigen}, it generates a DeLaunay tetrahedralization of a given volume. \texttt{tetgen} accepts various parameters which affect the process of tetrahedralization. For example, passing the \texttt{-a} option with a numerical argument $V$ when invoking \texttt{tetgen} ensures that limit the maximum volume over all tetrahedra in the output is $V$. Given below is an example of tetrahedralizing a L-shaped volumetric block.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{lmesh}
+\caption{Meshing a 3D volumetric L block}
+\label{fig:lmesh}
+\end{figure}
+
+\subsection{Input format}
+
+\texttt{tetgen} takes as input a file in the \texttt{.smesh} format. \texttt{smesh} stands for surface mesh. It is a format for representing Piecewise Linear Complexes. Each facet of the input object is considered to be made up of one polygon. We assume no holes or points inside the object. When passed the \texttt{-k} flag, it outputs a \texttt{.vtk} file. The VTK format is a convenient way to store meshes. To visualize these meshes, we can use the \textbf{Paraview} mesh viewer and editor.
+
+\chapter{Phenomena associated with burning}
+
+In the preceding chapters we described how objects are modeled and how fire and smoke are simulated. Now we look at how objects react to being burnt.
+
+\chapter{Acknowledgements}
+
+Figure~\ref{fig:lmesh} is a screenshot of a VTK visualizer I wrote in OpenGL to test \texttt{TetMesh}, a class I wrote for representing tetrahedral meshes. The code was originally written by \href{http://tomdalling.com/}{Tom Dalling} for a series of blogs explaining OpenGL. I modified the code to incorporate the \texttt{TetMesh} class.
+
+For the fluid simulation framework, I originally used \href{http://mantaflow.com/}{\textbf{Mantaflow}}, a fluid simulation framework. Due to difficulties with the library, I abandoned it in favour of modifying my classmate Harshavardhan's framework for simulating water using stable fluids.
+
+\chapter{Results and future work}
+
+\section{Heuristic Burning}
+
+I implemented a heuristic method for interactively burning a 2D object like paper as a proof-of-concept. In this section we explain the algorithm and evaluate it in the context of this project.
+
+\subsection{Algorithm}
+
+We divide the surface of the object into square cells and probabilistically propagate a flame from a cell to its four neighbours. Initially some points are chosen as sources of burning. Once the \texttt{space} key is pressed the flame  propagates outwards from each burning source. We have no concept of temperature. Each cell on the object is in one of three states: \textit{unburnt}, \textit{burning} and \textit{burnt}. All cells are initially \textit{unburnt}. In each simulation step, every burning cell has a chance to spread the flame to each of its four neighbours with a certain probability (this is a parameter of the simulation). Once a cell enters the \textit{burning} state, it stays in that state for a fixed number of simulation steps (this is also a parameter), and then enters the \textit{burnt} state. For rendering, we color \textit{burning} cells depending on the amount of time they have remained in the burning state. \textit{burnt} cells are black.
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}{.48\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{paper1}
+  \caption{3 initial points in the interior}
+\end{subfigure}
+\begin{subfigure}{.48\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{paper2}
+  \caption{5 initial points near the top}
+\end{subfigure}
+\caption{A heuristic-based method for simulating paper burning}
+\end{figure}
+
+\subsection{Evaluation}
+
+We observe that a lot of fine-tuning is needed to get a good simulation. The probability value needs to be tweaked. If it is too low, the flame dies out too quickly. If it is two high, the flame begins to resemble an outward-growing rectangle, which looks completely unrealistic. Furthermore, deformation, actual flame simulation and smoke are not covered by this simplistic model. Photorealism is absent. This proof-of-concept program verifies the need for physically-based animation as an alternative to na\"ive heuristic-based methods that only approximate reality instead of describing it.
+
+At the same time, there are some features of this model that we will use in our actual physically-based simulation, namely, propagating flame from nodes to neighbour nodes (except not probabilistically), and transitioning cells from unburnt to burning to the burnt state.
+
+\section{Tetrahedral Meshing}
+
+I implemented a class for representing tetrahedral meshes and integrated it into Mantaflow. To test it out, I wrote a VTK visualizer which loads a \texttt{.vtk} file and parses it into a tetrahedral mesh object.
+
+\section{Flame simulation}
+
+Currently, I am implementing a 2D smoke-and-fire simulation which is based on Harsha's code for simulating water in 2D. Once this is complete, I will add interaction with triangulated 2D meshes to the extent that the flame treats the object just as an obstacle. After this, I plan to incorporate a burning model. Once this is complete, I will extend the program to 3D.
+
+\bibliography{report}{}
+\bibliographystyle{unsrt} % citations are numbered in order of appearance
+
+\end{document}

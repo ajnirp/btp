@@ -1,0 +1,90 @@
+eulerian method - grid of cells, track fluid in each cell
+lagrangian method - track each particle of the fluid
+basic difference - in langrangian methods, the coordinates move with the fluid. SPH is a lagrangian method
+
+Use incompressible Euler equations to independently model both the vaporized fuel and the hot gaseous products
+Smoke and soot rendered using a blackbody radiation model
+Advection transport - the movement of some quantity via the bulk flow of a fluid e.g. a river or a pipeline
+
+Smoothed particle hydrodynamics
+-------------------------------
+
+Fundamental equation: A(r) = integral A(r')*delta(r-r')dr'
+
+We approximate dirac delta function at r with a function W(r-r',h) (kernel smoother function), and the integral by a summation over all other particles. In practice, we sum over all neighbouring particles that are within a certain distance of the r-th particle, under the assumption that the contribution from the other particles can be neglected. This way we bound the time complexity of the summation.
+
+The quantity A can be any particle property. Typical particle parameters: mass velocity pressure density color position force.
+
+level set method - representing 2D sets as the intersection of a 3D curve with the xy-plane (assuming z axis is pointing upwards). All points on the boundary of the set are the points on the xy plane and all points inside the set are the points above the xy plane. Visualization: http://upload.wikimedia.org/wikipedia/commons/c/c7/Level_set_method.jpg
+
+
+bendingmatches.pdf
+------------------
+
+Need to model structural effects of burning as well e.g. matches bend when burnt (due to fiber contraction - we need to model this specifically)
+simulate deformations on the proxy object
+
+Choose proxy (bounding box / convex hull / skeleton etc.) -> deform it -> apply its deformations to the main object
+
+LevelSetFireAndWater.ppt
+------------------------
+
+blue/bluish-green core
+yellowish-orange color
+fire soot/smoke core
+
+Paper Burning
+-------------
+
+White -> Black -> Red/orange hot -> grayish black
+Enclose the thin object within a control mesh
+Control mesh consists of two layers of control vertices arranged in a square pattern
+	Each square in this pattern represents a cell
+	Each cell is in one of three states
+		burning
+		burnt
+		unburnt
+	A burning cell is called an ignition point
+	Ignition points have attributes like
+		ignition start time IST
+		burning duration
+			at time ignition start + burning duration, the cell becomes a burnt cell
+	Fire spreads from burning cells to adjacent cells at a certain burning speed
+	given a burning cell
+	for each neighbour cell n
+		IST of n = IST of cell + spreading time
+	if current time > IST && status != burnt
+		set status to burning
+	define fringe cells as cells which have at least one neighbour whose is not burning or burnt
+	in each time step, find all fringe cells and use them to update the spreading of fire
+Corresponding control vertices in the lower and upper layers are connected by edges which intersect the thin object
+
+global variable time
+in each timestep
+	iterate over the cells
+	if a cell is a fringe cell (it is burning but it has at least one neighbour that is unburnt)
+		set the relevant neighbours to 'burning'
+			(will have to store the to-be-burning cells in a list so as to not the change the thing we are looping over!)
+	enforce the to-be-burning list
+	again iterate over the cells
+		if a cell is past its burning time (time == burn start + burn duration)
+			set it to burnt
+
+modeling deformation
+	model deformation using difference in pyrolysis and temperature
+	spreading speed = V0(1 - Cv.grad^2)
+		V0 material dependent
+		Cv coefficient of spread
+		grad gradient of the burning area
+	each control vertex is in charge of one cell
+		bottom left?
+	couple of control vertices - two corresponding control vertices on the top and bottom, both of which are in charge of the same area
+	for a given couple, find difference of pyrolysis and heat to get deformation amount
+		deformation amount represents a rotation amount
+		from this rotation amount, calculate the next displacement of the deformed vertex
+		act as though this displacement came from a force Fcrump
+		calculating Fcrump
+			displacement AB is known
+			calculate acceleration vector a
+			Fcrump = mass * a
+		add Fcrump to the other forces (gravity, buoyancy, spring forces etc.)

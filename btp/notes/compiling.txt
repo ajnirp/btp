@@ -1,0 +1,2 @@
+g++ cgal.cpp -lCGAL -lgmp -frounding-math
+g++ sphere.cpp -lCGAL -lgmp -frounding-math -lboost_thread -lmpfr

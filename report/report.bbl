@@ -1,0 +1,63 @@
+\begin{thebibliography}{1}
+
+\bibitem{festje}
+Fedkiw, Stam, and Jensen.
+\newblock {Visual simulation of smoke}.
+\newblock pages 17--22, 2001.
+\newblock \url{http://graphics.ucsd.edu/~henrik/papers/smoke/smoke.pdf}.
+
+\bibitem{stam}
+Jos Stam.
+\newblock {Stable Fluids}.
+\newblock {\em Proceedings of the 26th annual conference on Computer graphics
+  and interactive techniques}, pages 121--128, 1999.
+\newblock \url{http://www.autodeskresearch.com/pdf/ns.pdf}.
+
+\bibitem{ngfeje}
+Nguyen, Fedkiw, and Jensen.
+\newblock {Physically based modeling and animation of fire}, 2002.
+\newblock \url{http://physbam.stanford.edu/~fedkiw/papers/stanford2002-02.pdf}.
+
+\bibitem{jiyoai}
+Jiao, Yonggan, and Aimin.
+\newblock {{GPU} Based Burning Process Simulation}, 2012.
+
+\bibitem{liliansu}
+Liu, Liu, An, and Sun.
+\newblock {Physically based simulation of thin-shell objects' burning}.
+\newblock {\em The Visual Computer: International Journal of Computer
+  Graphics}, pages 687--696, 2009.
+\newblock
+  \url{http://www.cs.rochester.edu/u/qliu/homepage_data/TVC2009_burning.pdf}.
+
+\bibitem{loirgufe}
+Losasso, Irving, Guendelman, and Fedkiw.
+\newblock {Melting and burning solids into liquids and gases}.
+\newblock {\em IEEE Transactions on Visualization and Computer Graphics}, pages
+  343--352, 2006.
+\newblock \url{http://physbam.stanford.edu/~fedkiw/papers/stanford2005-08.pdf}.
+
+\bibitem{melek}
+Zeki Melek.
+\newblock {\em {Interactive Simulation of Fire, Burn and Decomposition}}.
+\newblock PhD thesis, 2007.
+\newblock
+  \url{http://research.cs.tamu.edu/keyser/Papers/MelekDissertation.pdf}.
+
+\bibitem{sethian}
+J.~A. Sethian.
+\newblock {A fast marching level set method for monotonically advancing
+  fronts}.
+\newblock {\em Proceedings of the National Academy of Sciences}, pages
+  1591--1595, 1995.
+\newblock
+  \url{https://www.ljll.math.upmc.fr/frey/ftp/M5105/Sethian\%20J.A.,\%20A\%20fast\%20marching\%20level\%20set\%20method\%20for\%20monotonically\%20advancing\%20fronts.pdf}.
+
+\bibitem{ghost}
+Fedkiw, Aslam, Merriman, and Osher.
+\newblock {A Non-Oscillatory Eulerian Approach to Interfaces in Multimaterial
+  Flows (The Ghost Flowsluid Method)}.
+\newblock {\em Journal of Computational Physics}, pages 457--492, 1998.
+\newblock \url{http://public.lanl.gov/aslam/cam98-17.pdf}.
+
+\end{thebibliography}

@@ -1,0 +1,136 @@
+video by the swedish student
+https://www.youtube.com/watch?v=F40_rowaLQg
+
+notes
+
+incompressible navier stokes equations do not account for expansion of fuel
+as it reacts to form hot gaseous products
+
+the fire consists of a hot blue core, a gaseous fuel and hot gaseous products
+the last two are modeled by separate incompressible euler equations aka navier stokes equations
+a dynamic (moving) implicit surface with zero thickness separates the hot gaseous products from the gaseous fuel
+in reality, the reaction zones has a nontrivial thickness but in our simulation we can ignore this
+also, we use vorticity confinement to add turbulence to the flame
+
+the implicit surface separates the unreacted fuel from both the hot gaseous products as well as the surrounding air
+suppose burning was not happening, then, the velocity of the implicit surface would be the same as the velocity of injection of the unreacted fuel
+on the other hand if burning is happening, then the velocity of the implicit surface is velocity of the unreacted fuel plus the flame speed S which indicates how fast unreacted fuel is being converted to gaseous products
+
+in this model, the thin blue core is located adjacent to the implicit surface
+tracking the blue core is thus equivalent to tracking the implicit surface
+
+first find u*, then use that to solve for pressure
+problem: while updating, we may cross into the other fluid's region
+solution: use the balance equation
+rhoh * (Vh - D) = rhof * (Vf - D)
+Vh = normal velocity of hot gaseous product
+Vf = normal velocity of gaseous fuel
+D = speed of implicit surface in normal surface
+
+say we are solving for the hot gaseous product and we go into a region of space
+occupied by the gaseous fuel
+we don't want to use this value
+so instead we use a ghost value VhG as follows
+Vf = ufvec . nvec (nvec = normal vector at that cell in space)
+VhG = Vf + (rhof/rhoh - 1)*S // S = reaction speed, a characteristic property of the fuel
+then, use eq 13 from the paper to find the velocity vector uhGvec in terms of ufvec, VhG and nvec
+
+clarification: when fedkiw and co. say 'euler equations' they mean, in wikipedia's language, 'navier-stokes equations + euler equations'
+(However, fluid dynamics literature often refers to the full set – including the energy equation – together as "the Euler equations: from http://en.wikipedia.org/wiki/Euler_equations_(fluid_dynamics))
+
+----
+
+implicit surface is positive in the region of space filled with fuel
+zero at the reaction zone
+negative elsewhere
+
+implicit surface tracked via moving level set method
+implicit surface assumed to move exactly the same way as the reaction zone, which separates the blue core from the gaseous product
+
+w = uf + Sn
+w is implicit surface velocity, defined at the center of each voxel
+n = local unit normal, defined at the center of each voxel
+uf = velocity of gaseous fuel, defined at the center of each voxel
+S is a fuel constant
+n = (grad phi) / |mod of grad phi|
+compute grad phi via central differencing
+	x component -> phi at cell i+1 - phi at cell i-1 divided by 2h
+compute uf at voxel centers via averaging
+	for the x component of velocity in cell i, average ux at cell i-1 and ux at cell i
+	e.g. for cell 1, average the ux's of cell 0 and cell 1
+now uf and n are known, and S is a fuel constant, so we can find w = uf + Sn for each voxel in the grid
+now, find the new phi as follows:
+	phi_new = phi_old - (time_step)(w1*phix + w2*phiy)
+		if w1 > 0
+			phix = phi(i,j) - phi(i-1,j) divided by h
+		elsif w1 < 0
+			phix = phi(i+1,j) - phi(i,j) divided by h
+
+occasionally adjust the values of phi - need to look into this
+
+evolution of u
+first obtain intermediate velocity u_*
+	see stam stable fluids 1999 and visual simuln of smoke 2001
+then add pressure correction
+	(div u_*) / (time_step) = (laplacian-pressure / density)
+
+---
+
+stam's stable fluids - see dan morris' notes
+FluidSolver.java
+modification to Stam's method - we have two fluids evolving in a coupled way, so method of characteristics needs to be modified by the ghost fluid method. this is done only when our interpolation crosses the implicit surface and takes us to the other fluid.
+also, for my purposes, vorticityConfinement() is to be removed from the velocitySolver() FluidSolver.java as we are simulating fire and not smoke
+also, the buoyancy force method needs to be changed to the one used by fedkiw in the physbmaaof paper
+also, temperature updation needs to be done - question, at which point in the pseudocode?
+temperature of air is constant or not?
+
+pseudocode
+
+set up flame simulation parameters
+	grid size
+	viscosity
+	buoyant force alpha
+	air temperature
+	ignition temperature
+	max temperature (see figure 2 in fedkiw)
+
+velocity-solver
+	add buoyancy force
+	diffuse velocity
+	make velocity field incompressible
+	advect velocity along the velocity field // in morris' notes, this is done later!
+	// note - morris projects twice. he has to project after the advection anyway
+	// but he also projects before the advection in order to have an incompressible field
+
+temperature-solver
+	// see fedkiw's paper
+	advect temperature along the velocity field to get Y*
+	Ynew = k*(delta t) + Y*
+	assign temperature based on Y
+		inside blue core, set T = Tignition
+		(see sec 4.3 pg 5-6)
+
+implicit-surface-solver
+	evolve implicit surface according to section 4.1
+	adjust phi so that it remains a signed distance function with norm of grad = 1
+
+main
+	initialize gas
+	initialize implicit surface
+	while true
+		temperature solver // do this first because T affects buoyant force
+		velocity solver
+		implicit surface solver
+		if (iteration number % period == 0)
+			adjust implicit surface via fast march
+		render
+
+ordering of IS/TS/VS?
+	probably implicit solver after
+isocontour adjustment?
+	fast sweep / fast march in order to remove level set errors
+	every few iterations adjust phi values
+	ch 1-2 of level set equations by sethian and fedkiw
+
+semi-lagrangian has numerical dissipation
+use FLIP

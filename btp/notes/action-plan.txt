@@ -1,0 +1,42 @@
+model different objects
+	should be of diff classes
+	matchstick, candle, paper, rope, wood
+	burn transfer
+model flame
+	flame progression
+	burning
+oxygen?
+
+augmented mpm for phase change
+
+effects of burning
+	deformation
+	mass loss
+		heat - conducted in the solid - diffusion equation
+		smoke - fluid
+		ash - mpm
+		melting - mpm
+
+mesh
+grid data structure - done
+put mesh in grid - done, partially
+OpenGL - done
+use mantaflow for physically based modeling of fire - use solvers
+put flame in grid
+--end aug
+
+solid and flame together
+flame propagation + smoke, no deformation
+--end sep
+
+deformation, ash
+multiple objects supported, flame transfer supported
+--end oct
+
+
+melting, raytracing via RenderMan - reads simulation state dumps
+
+mantaflow grid
+
+screenspace rendering of fluids curvature flow
+screenspace rendering of fire?

@@ -1,0 +1,28 @@
+Problem Statement
+-----------------
+Given an object, and one or more starting ignition points, physically simulate the burning of the object
+
+Notes
+-----
+* The object is represented by a mesh in 3D. 2D objects like cloth or paper and 1D objects like threads may deform during the burning process and so are represented in 3D
+* The object can be made of any material
+* The material of the object influences:
+	a. Strength of the flame and speed at which it spreads
+	b. Residual products of burning (char)
+	c. Deformation of the mesh
+	d. Destruction of vertices of the mesh during the burning process, if any
+
+Constraints
+-----------
+* The ignition point(s) are taken from exterior vertices only
+* New ignition points can be added at any point in the burning process
+* Nothing interferes with the burning of the object [?]
+* The method does not rely on properties of the material, or assume anything about its initial shape or initial dimensionality (it should apply equally well to 1D, 2D and 3D objects)
+
+Ignition
+--------
+
+Ignition at a particular vertex at a particular time instant happens in many ways
+
+1. The user manually sets the vertex on fire
+2. For whatever reason (direct contact from flame front, flame front igniting some other part of the mesh), self-pyrolysis happens wherein the temperature of a vertex rises past its self-pyrolysis threshold
