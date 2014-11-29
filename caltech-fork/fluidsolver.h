@@ -1,8 +1,22 @@
+#ifndef FLUIDSOLVER_H
+#define FLUIDSOLVER_H
+
 #include <utility>
+using namespace std;
 
 class FluidSolver
 {
 private:
+    inline void clear(float* arr) { for (int i = 0; i < size; i++) arr[i] = 0; }
+    inline int I(int i, int j){ return i + (n + 2) * j; }
+
+    void setBoundary(int b, float* x);
+    void advect(int b, float* d, float* d0, float* du, float* dv);
+    void diffuse(int b, float* c, float* c0, float diff);
+    void swap(float* a, float* b);
+    void addSource(float* a, float* b);
+
+public:
     int n, size;
 
     float dt;
@@ -17,20 +31,11 @@ private:
     float *v, *vOld;
     float *curl;
 
-    inline void clear(float* arr) { for (int i = 0; i < size; i++) arr[i] = 0; }
-    inline int I(int i, int j){ return i + (n + 2) * j; }
-
-    void setBoundary(int b, float* x);
-    void advect(int b, float* d, float* d0, float* du, float* dv);
-    void diffuse(int b, float* c, float* c0, float diff);
-    void swap(float* a, float* b);
-    void addSource(float* a, float* b);
-
-public:
     FluidSolver(int n, float dt);
     ~FluidSolver();
-    void initFluid(pair<int> locations[], int num_locations);
-    void reset();
+    
+    void initFluid(pair<int,int> locations[], int num_locations);
+    void initArrays();
     void buoyancy(float* fbuoy);
     void step();
     void temperatureSolver();
@@ -43,3 +48,5 @@ public:
     void linearSolver(int b, float* x, float* x0, float a, float c);
     void densitySolver();
 };
+
+#endif

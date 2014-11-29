@@ -1,0 +1,67 @@
+\documentclass[11pt]{article}
+\usepackage{iitbtitle}
+\usepackage{a4wide}
+\usepackage{anysize}
+\usepackage{iitbcs}
+\usepackage{latexsym}
+\usepackage{amssymb}
+\usepackage{epsfig}
+% \usepackage{psfig}
+\usepackage{tabls}
+\usepackage[dvips]{color}
+
+\marginsize{2.5cm}{2.5cm}{1cm}{1.5cm}
+\def\baselinestretch{1.15}                          
+
+\newcommand\INPUT{\item[\textbf{Input:}]}
+\newcommand\OUTPUT{\item[\textbf{Output:}]}
+
+\begin{document}
+
+
+
+%\baselineskip 20pt
+%The definitions
+\def\title{Information Retrieval from Structured and Semi-Structured Databases}
+\def\what{B. Tech. Stage-I Project Report }
+\def\degree{Bachelor~of~Technology}
+\def\who{Shariq Rizvi}
+\def\roll{99005003}
+\def\guide{Dr. S. Sudarshan}
+
+\titlpage
+\def\bsq{\begin{flushright} $\blacksquare$\\ \end{flushright}}
+\def\tab{\hspace{5mm}}
+
+%The stuff
+\pagenumbering{roman}
+\begingroup\def\thispagestyle#1{}\def\baselinestretch{1.5}\tableofcontents\endgroup     
+\newpage
+\begin{abstract}
+Fill in your abstract here. 
+\end{abstract}
+% \input{abstract}
+\newpage
+\pagenumbering{arabic}
+
+\section{Introduction}
+
+Fill in your introduction here.
+
+\section{Section 1}
+
+Fill in your introduction here.
+
+\section{Conclusions}
+
+% \input{future}
+
+\section*{Acknowledgements}
+
+Fill in your acks here
+
+\bibliographystyle{alpha}
+\bibliography{references}
+% You need to have a bibliography file called references.bib
+\end{document}
+

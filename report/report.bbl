@@ -1,63 +1,139 @@
-\begin{thebibliography}{1}
+\newcommand{\etalchar}[1]{$^{#1}$}
+\begin{thebibliography}{FAMO99}
 
-\bibitem{festje}
-Fedkiw, Stam, and Jensen.
-\newblock {Visual simulation of smoke}.
-\newblock pages 17--22, 2001.
-\newblock \url{http://graphics.ucsd.edu/~henrik/papers/smoke/smoke.pdf}.
+\bibitem[Dal12]{dalling}
+T.~Dalling.
+\newblock {Modern {OpenGL}}, 2012.
+\newblock \href{http://www.tomdalling.com/blog/category/modern-opengl/}{direct
+  link, last accessed Nov 24 2014}.
 
-\bibitem{stam}
-Jos Stam.
-\newblock {Stable Fluids}.
-\newblock {\em Proceedings of the 26th annual conference on Computer graphics
-  and interactive techniques}, pages 121--128, 1999.
-\newblock \url{http://www.autodeskresearch.com/pdf/ns.pdf}.
+\bibitem[FAMO99]{ghost}
+Ronald~P. Fedkiw, Tariq Aslam, Barry Merriman, and Stanley Osher.
+\newblock A non-oscillatory eulerian approach to interfaces in multimaterial
+  flows (the ghost fluid method).
+\newblock {\em J. Comput. Phys.}, 152(2):457--492, July 1999.
+\newblock \href{http://public.lanl.gov/aslam/cam98-17.pdf}{direct link, last
+  accessed Nov 24 2014}.
 
-\bibitem{ngfeje}
-Nguyen, Fedkiw, and Jensen.
-\newblock {Physically based modeling and animation of fire}, 2002.
-\newblock \url{http://physbam.stanford.edu/~fedkiw/papers/stanford2002-02.pdf}.
+\bibitem[FSJ01]{festje}
+Ronald Fedkiw, Jos Stam, and Henrik~Wann Jensen.
+\newblock Visual simulation of smoke.
+\newblock In {\em Proceedings of the 28th Annual Conference on Computer
+  Graphics and Interactive Techniques}, SIGGRAPH '01, pages 15--22, New York,
+  NY, USA, 2001. ACM.
+\newblock \href{http://graphics.ucsd.edu/~henrik/papers/smoke/smoke.pdf}{direct
+  link, last accessed Nov 24 2014}.
 
-\bibitem{jiyoai}
+\bibitem[JYA12]{jiyoai}
 Jiao, Yonggan, and Aimin.
-\newblock {{GPU} Based Burning Process Simulation}, 2012.
-
-\bibitem{liliansu}
-Liu, Liu, An, and Sun.
-\newblock {Physically based simulation of thin-shell objects' burning}.
-\newblock {\em The Visual Computer: International Journal of Computer
-  Graphics}, pages 687--696, 2009.
+\newblock {GPU} based burning process simulation.
+\newblock In {\em The Fifth International Conference on Advances in
+  Computer-Human Interactions}, pages 1--6, 2012.
 \newblock
-  \url{http://www.cs.rochester.edu/u/qliu/homepage_data/TVC2009_burning.pdf}.
+  \href{http://www.thinkmind.org/download.php?articleid=achi_2012_1_10_20025&ei=kDVzVNPaC9WRuASv6YKACw&usg=AFQjCNGepFM61VV7LSM0f3aSgXRuL_C8MQ&sig2=Wzc7KUVt0Qp_9ZlL7w_ezg&bvm=bv.80185997,d.c2E&cad=rja}{direct
+  link, last accessed Nov 24 2014}.
 
-\bibitem{loirgufe}
-Losasso, Irving, Guendelman, and Fedkiw.
-\newblock {Melting and burning solids into liquids and gases}.
-\newblock {\em IEEE Transactions on Visualization and Computer Graphics}, pages
-  343--352, 2006.
-\newblock \url{http://physbam.stanford.edu/~fedkiw/papers/stanford2005-08.pdf}.
+\bibitem[Kod14]{harsha}
+H.~Kode.
+\newblock {Simulating sand-water interaction at the beach - {RnD Project
+  Report}}.
+\newblock IIT Bombay, 2014.
 
-\bibitem{melek}
-Zeki Melek.
+\bibitem[LIGF06]{loirgufe}
+Frank Losasso, Geoffrey Irving, Eran Guendelman, and Ron Fedkiw.
+\newblock Melting and burning solids into liquids and gases.
+\newblock {\em IEEE Transactions on Visualization and Computer Graphics},
+  12(3):343--352, May 2006.
+\newblock
+  \href{http://physbam.stanford.edu/~fedkiw/papers/stanford2005-08.pdf}{direct
+  link, last accessed Nov 24 2014}.
+
+\bibitem[LLA{\etalchar{+}}09]{liliansu}
+Shiguang Liu, Qiguang Liu, Tai An, Jizhou Sun, and Qunsheng Peng.
+\newblock Physically based simulation of thin-shell objects' burning.
+\newblock {\em Vis. Comput.}, 25(5-7):687--696, April 2009.
+\newblock
+  \href{http://www.cs.rochester.edu/u/qliu/homepage_data/TVC2009_burning.pdf}{direct
+  link, last accessed Nov 24 2014}.
+
+\bibitem[Mel07]{melek}
+Z.~Melek.
 \newblock {\em {Interactive Simulation of Fire, Burn and Decomposition}}.
-\newblock PhD thesis, 2007.
+\newblock PhD thesis, Texas A \& M University, 12 2007.
 \newblock
-  \url{http://research.cs.tamu.edu/keyser/Papers/MelekDissertation.pdf}.
+  \href{http://research.cs.tamu.edu/keyser/Papers/MelekDissertation.pdf}{direct
+  link, last accessed Nov 24 2014}.
 
-\bibitem{sethian}
+\bibitem[Mor]{dmorris}
+Dan Morris.
+\newblock Dan morris' notes on stable fluids (jos stam, siggraph 1999).
+\newblock
+  \href{https://www.techhouse.org/~dmorris/projects/summaries/dmorris.stable_fluids.notes.pdf}{direct
+  link, last accessed Nov 29 2014}.
+
+\bibitem[NFJ02]{ngfeje}
+Duc~Quang Nguyen, Ronald Fedkiw, and Henrik~Wann Jensen.
+\newblock Physically based modeling and animation of fire.
+\newblock In {\em Proceedings of the 29th Annual Conference on Computer
+  Graphics and Interactive Techniques}, SIGGRAPH '02, pages 721--728, New York,
+  NY, USA, 2002. ACM.
+\newblock
+  \href{http://physbam.stanford.edu/~fedkiw/papers/stanford2002-02.pdf}{direct
+  link, last accessed Nov 24 2014}.
+
+\bibitem[PT13]{mantaflow}
+Tobias Pfaff and Nils Thuerey.
+\newblock {MantaFlow}, 2013.
+\newblock \href{http://mantaflow.com}{project homepage, last accessed Nov 24
+  2014}.
+
+\bibitem[Sch]{caltech}
+Peter Schr\"oder.
+\newblock {Stable Fluids Demo}.
+\newblock
+  \href{www.multires.caltech.edu/teaching/demos/java/stablefluids.htm}{direct
+  link, last accessed Nov 29 2014}.
+
+\bibitem[Set96]{sethian}
 J.~A. Sethian.
 \newblock {A fast marching level set method for monotonically advancing
   fronts}.
-\newblock {\em Proceedings of the National Academy of Sciences}, pages
-  1591--1595, 1995.
+\newblock 93:1591--1595, 1996.
 \newblock
-  \url{https://www.ljll.math.upmc.fr/frey/ftp/M5105/Sethian\%20J.A.,\%20A\%20fast\%20marching\%20level\%20set\%20method\%20for\%20monotonically\%20advancing\%20fronts.pdf}.
+  \href{https://www.ljll.math.upmc.fr/frey/ftp/M5105/Sethian\%20J.A.,\%20A\%20fast\%20marching\%20level\%20set\%20method\%20for\%20monotonically\%20advancing\%20fronts.pdf}{direct
+  link, last accessed Nov 24 2014}.
 
-\bibitem{ghost}
-Fedkiw, Aslam, Merriman, and Osher.
-\newblock {A Non-Oscillatory Eulerian Approach to Interfaces in Multimaterial
-  Flows (The Ghost Flowsluid Method)}.
-\newblock {\em Journal of Computational Physics}, pages 457--492, 1998.
-\newblock \url{http://public.lanl.gov/aslam/cam98-17.pdf}.
+\bibitem[She96]{shewchuk}
+Jonathan~Richard Shewchuk.
+\newblock Triangle: Engineering a 2d quality mesh generator and delaunay
+  triangulator.
+\newblock {\em Lecture Notes in Computer Science}, 1148:203--222, 5 1996.
+\newblock \href{http://www.cs.cmu.edu/~quake/triangle.html}{project homepage,
+  last accessed Nov 24 2014}.
+
+\bibitem[SSC{\etalchar{+}}13]{snow}
+Alexey Stomakhin, Craig Schroeder, Lawrence Chai, Joseph Teran, and Andrew
+  Selle.
+\newblock A material point method for snow simulation.
+\newblock {\em ACM Trans. Graph.}, 32(4):102:1--102:10, July 2013.
+\newblock \href{https://www.math.ucla.edu/~jteran/papers/SSCTS13.pdf}{direct
+  link, last accessed Nov 24 2014}.
+
+\bibitem[SSJ{\etalchar{+}}14]{stomahkin}
+Alexey Stomakhin, Craig Schroeder, Chenfanfu Jiang, Lawrence Chai, Joseph
+  Teran, and Andrew Selle.
+\newblock Augmented mpm for phase-change and varied materials.
+\newblock {\em ACM Trans. Graph.}, 33(4):138:1--138:11, July 2014.
+\newblock \href{https://www.math.ucla.edu/~jteran/papers/SSJCTS14.pdf}{direct
+  link, last accessed Nov 24 2014}.
+
+\bibitem[Sta99]{stam}
+Jos Stam.
+\newblock Stable fluids.
+\newblock In {\em Proceedings of the 26th Annual Conference on Computer
+  Graphics and Interactive Techniques}, SIGGRAPH '99, pages 121--128, New York,
+  NY, USA, 1999. ACM Press/Addison-Wesley Publishing Co.
+\newblock \href{http://www.autodeskresearch.com/pdf/ns.pdf}{direct link, last
+  accessed Nov 24 2014}.
 
 \end{thebibliography}

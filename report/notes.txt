@@ -1,7 +1,37 @@
-add
-	abstract
-	b tech project part i
-	i certify...
-	structure of this report
-	how are objects burnt
-	look at conference-paper-archives to see what can be added in literature survey
+conference publication - author title pg numbers where published (conference) year
+journal publication - author title name of journal volume number page number year publisher
+technical / personal report, online article - name article, author, url, last accessed on
+all equations should be typeset and numbered
+cross-referencing. if a figure is present, it should be referenced!
+
+book - author title ISSN number year publisher
+book chapter - chapter name, book name, chapterauthor name, bookauthor name
+referring to own project - rnd project title, project owner, iit bombay, year
+
+after all this, spellcheck!!
+
+sense of continuity
+-------------------
+chapters should tie into each other! - HANDOFF
+ch 1 usually introduction, motivation, challenges
+ch 2 on ending literature survey, let's look at implementation details
+chapters begin with a preamble - PICKUP
+
+in the end, conclusion + future work
+
+iit bombay without a comma
+use saket's template! - sir will forward to class
+USE GUIDELINES on iitb web site
+certificate
+declaration
+abstract
+
+
+if btp template conflicts with guidelines use the guidelines
+
+---
+
+make slides, report, webpage with links to these, email to parag sir and sharat sir
+print out a hardcopy
+one day before BTP presentation, send out a mail to vigil
+go to vigil, set up projector, make sure it works

@@ -1,41 +1,55 @@
 #include "fluidsolver.h"
 
+#define WINDOW_SIDE 300
+
 #include <GL/gl.h>
 #include <GL/glut.h>
 
 #include <iostream>
+#include "fluidsolver.h"
 
 using namespace std;
 
-int w = 200;
-int h = 200;
+int s = WINDOW_SIDE;
 int window_id;
 
 void init_gl();
 void timerFunc(int);
 void keyboardFunc(unsigned char, int, int);
 void displayFunc();
-void render(int, char**);
+void render();
 
-FluidSolver* fs;
+int n = 60;
+int dg = WINDOW_SIDE / n; // cell dimensions
+int dg_2 = dg / 2;
+float dt = 0.2f;
+
+inline int I(int i, int j){ return i + (n + 2) * j; }
+
+FluidSolver fs(n, dt);
 
 int main(int argc, char **argv)
 {
-  fs = new FluidSolver(100, 0.2f);
-  // render(argc, argv);
+  glutInit(&argc, argv);
+  render();
   return 0;
 }
 
-void render(int argc, char **argv)
+void render()
 {
-  glutInit(&argc, argv);
-  glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
-  glutInitWindowSize(w, h);
-  window_id = glutCreateWindow("BTP");
+  glutInitWindowSize(WINDOW_SIDE, WINDOW_SIDE);
+  window_id = glutCreateWindow("Flame");
+  glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_ALPHA);
+
   glutDisplayFunc(displayFunc);
   glutKeyboardFunc(keyboardFunc);
-  glutTimerFunc(10,timerFunc,0);
-  init_gl();
+
+  glClearColor(1, 1, 1, 1);
+  glColor3f(0, 0, 0);
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+  gluOrtho2D(0, WINDOW_SIDE, 0, WINDOW_SIDE);
+  glutTimerFunc(1000, timerFunc, 0);
   glutMainLoop();
 }
 
@@ -44,25 +58,47 @@ void timerFunc(int iter)
   if(iter < 2000)
   {
     cout << iter << endl;
-    fs->step();
-    iter += 1;
+    fs.step();
+    iter++;
     glutPostRedisplay();
-    glutTimerFunc(0,timerFunc,iter); 
+    glutTimerFunc(0, timerFunc, iter); 
   }
-}
-
-void init_gl()
-{
-  glClearColor(1,1,1,0);
-  glColor3f(0,0,0);
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
-  gluOrtho2D(0,w,0,h);
 }
 
 void displayFunc()
 {
-  // for (int i = 0 ; i < )
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+  glBegin(GL_QUADS);
+  for (int i = 1 ; i <= n ; i++)
+  {
+    int dx, dy;
+    dx = (int) ((i - 0.5f) * dg);
+    for (int j = 1 ; j <= n ; j++)
+    {
+      dy = (int)((j - 0.5f) * dg);
+      if (fs.d[I(i, j)] > 0)
+      {
+        int c = (int)((1.0 - fs.d[I(i, j)]) * 255); // color
+        if (c < 0) c = 0;
+        glColor3ub(c, c, c);
+        glVertex2f(dx-dg_2, dy-dg_2);
+        glVertex2f(dx-dg_2, dy+dg_2);
+        glVertex2f(dx+dg_2, dy+dg_2);
+        glVertex2f(dx+dg_2, dy-dg_2);
+      }
+
+      // // draw velocity field
+      // if (vkey && i % 5 == 1 && j % 5 == 1)
+      // {
+      //   u = (int)( 50 * fs.u[I(i,j)] );
+      //   v = (int)( 50 * fs.v[I(i,j)] );
+      //   big.setColor(Color.red);
+      //   big.drawLine(dx, dy, dx+u, dy+v);
+      // }
+    }
+  }
+  glEnd();
   glutSwapBuffers();
 }
 

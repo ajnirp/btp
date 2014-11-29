@@ -8,7 +8,7 @@ FluidSolver::FluidSolver(int n, float dt)
     this->n = n;
     this->dt = dt;
     size = (n + 2) * (n + 2);
-    reset();
+    initArrays();
 }
 
 FluidSolver::~FluidSolver()
@@ -146,7 +146,8 @@ void FluidSolver::diffuse(int b, float* c, float* c0, float diff)
 
 void FluidSolver::swap(float* a, float* b)
 {
-    for (int i = 0; i < size; i++) {
+    for (int i = 0; i < size; i++)
+    {
         float tmp = a[i];
         a[i] = b[i];
         b[i] = tmp;
@@ -159,7 +160,7 @@ void FluidSolver::addSource(float* a, float* b)
         a[i] += dt * b[i];
 }
 
-void FluidSolver::reset()
+void FluidSolver::initArrays()
 {
     d    = new float[size];
     dOld = new float[size];
@@ -185,6 +186,7 @@ void FluidSolver::step()
 {
     temperatureSolver();
     velocitySolver();
+    densitySolver();
     implicitSurfaceSolver();
 }
 
@@ -197,6 +199,10 @@ void FluidSolver::implicitSurfaceSolver()
 // page 5, stam - stable fluids
 void FluidSolver::velocitySolver()
 {
+    vorticityConfinement(uOld, vOld);
+    addSource(u, uOld);
+    addSource(v, vOld);
+
     buoyancy(vOld);
     addSource(v, vOld);
 
@@ -261,13 +267,13 @@ void FluidSolver::linearSolver(int b, float* x, float* x0, float a, float c)
     }
 }
 
-void FluidSolver::initFluid(pair<int> locations[], int num_locations)
+void FluidSolver::initFluid(pair<int,int> locations[], int num_locations)
 {
-    for (int i = 0 ; i < num_locations ; i++) {
-        int x = num_locations[i].first;
-        int y = num_locations[i].second;
-        
-    }
+    // for (int i = 0 ; i < num_locations ; i++)
+    // {
+    //     int x = num_locations[i].first;
+    //     int y = num_locations[i].second;
+    // }
 }
 
 void FluidSolver::densitySolver()
